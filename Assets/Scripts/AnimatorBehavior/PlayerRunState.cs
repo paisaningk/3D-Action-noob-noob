@@ -7,21 +7,29 @@ namespace AnimatorBehavior
     public class PlayerRunState : StateMachineBehaviour
     {
         public PlayerVFXManager playerVfx;
+        public bool isGet;
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
             AnimatorControllerPlayable controller)
         {
-            if (!playerVfx)
+            if (!isGet && animator.TryGetComponent(out playerVfx))
             {
-                playerVfx = animator.GetComponent<PlayerVFXManager>();
+                isGet = true;
             }
 
-            playerVfx.UpdateFootStep(true);
+
+            if (playerVfx)
+            {
+                playerVfx.UpdateFootStep(true);
+            }
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            playerVfx.UpdateFootStep(false);
+            if (playerVfx)
+            {
+                playerVfx.UpdateFootStep(false);
+            }
         }
     }
 }
