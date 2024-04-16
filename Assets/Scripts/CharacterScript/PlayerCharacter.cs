@@ -1,4 +1,5 @@
-﻿using CharacterScript.Player;
+﻿using System;
+using CharacterScript.Player;
 using UnityEngine;
 
 namespace CharacterScript
@@ -10,28 +11,20 @@ namespace CharacterScript
         public Camera cam;
         public PlayerInput playerInput;
 
+
         [Header("Vertical")]
+        public bool isGrounded;
         public float verticalVelocity;
         public float gravity = -9.8f;
 
+        public float attackStartTime;
+        public float attackSlideSpeed = 0.06f;
+        public float attackSlideDuration = 0.4f;
+
+
         private void FixedUpdate()
         {
-            CalculateMovement();
-
-            if (!characterController.isGrounded)
-            {
-                verticalVelocity = gravity;
-            }
-            else
-            {
-                verticalVelocity = gravity * 0.3f;
-            }
-
-            animator.SetBool(airBorneAnimator, !characterController.isGrounded);
-
-            moveVelocity += Vector3.up * (verticalVelocity * Time.deltaTime);
-
-            characterController.Move(moveVelocity);
+            Loop();
         }
 
         protected override void OnValidate()
@@ -41,6 +34,96 @@ namespace CharacterScript
             playerInput = GetComponent<PlayerInput>();
             characterController = GetComponent<CharacterController>();
             cam = Camera.main;
+        }
+
+        protected override void EnterState()
+        {
+            if (isEnter)
+            {
+                return;
+            }
+
+            switch (currentState)
+            {
+                case CharacterState.Idle:
+                    break;
+                case CharacterState.Attack:
+                    Debug.Log("adc");
+                    animator.SetTrigger(attackAnimator);
+                    attackStartTime = Time.time;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            isEnter = true;
+        }
+
+        protected override void Loop()
+        {
+            switch (currentState)
+            {
+                case CharacterState.Idle:
+                    IdleStateLoop();
+                    break;
+                case CharacterState.Attack:
+                    AttackStateLoop();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void AttackStateLoop()
+        {
+            if (Time.time < attackStartTime + attackSlideDuration)
+            {
+                var timePassed = Time.time - attackStartTime;
+                var lerpTime = timePassed / attackSlideDuration;
+
+                moveVelocity = Vector3.Lerp(transform.forward * attackSlideSpeed, Vector3.zero, lerpTime);
+            }
+
+            ApplyGravity();
+
+            characterController.Move(moveVelocity);
+        }
+
+        private void IdleStateLoop()
+        {
+            if (playerInput.isMousePressed && characterController.isGrounded)
+            {
+                ExitStateTo(CharacterState.Attack);
+                return;
+            }
+
+            CalculateMovement();
+
+            ApplyGravity();
+
+            animator.SetBool(airBorneAnimator, !isGrounded);
+
+            characterController.Move(moveVelocity);
+        }
+
+        private void ApplyGravity()
+        {
+            if (!characterController.isGrounded)
+            {
+                verticalVelocity = gravity;
+            }
+            else
+            {
+                verticalVelocity = gravity * 0.3f;
+            }
+
+            isGrounded = characterController.isGrounded;
+            moveVelocity += Vector3.up * (verticalVelocity * Time.deltaTime);
+        }
+
+        public void AttackAnimationEnd()
+        {
+            ExitStateTo(CharacterState.Idle);
         }
 
         protected override void CalculateMovement()

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 namespace CharacterScript
@@ -11,7 +12,7 @@ namespace CharacterScript
 
         private void FixedUpdate()
         {
-            CalculateMovement();
+            Loop();
         }
 
         protected override void OnValidate()
@@ -24,6 +25,33 @@ namespace CharacterScript
             if (!playerTransform)
             {
                 playerTransform = FindObjectOfType<PlayerCharacter>().transform;
+            }
+        }
+
+        protected override void EnterState()
+        {
+            switch (currentState)
+            {
+                case CharacterState.Idle:
+                    break;
+                case CharacterState.Attack:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        protected override void Loop()
+        {
+            switch (currentState)
+            {
+                case CharacterState.Idle:
+                    CalculateMovement();
+                    break;
+                case CharacterState.Attack:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

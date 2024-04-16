@@ -6,6 +6,7 @@ namespace VFX
     public class PlayerVFXManager : MonoBehaviour
     {
         public VisualEffect footStep;
+        public ParticleSystem attack1;
 
         public void UpdateFootStep(bool state)
         {
@@ -17,6 +18,11 @@ namespace VFX
             {
                 footStep.Stop();
             }
+        }
+
+        public void PlayAttack1()
+        {
+            attack1.Play();
         }
     }
 }
