@@ -30,15 +30,25 @@ namespace CharacterScript
 
         protected override void EnterState()
         {
+            if (isEnter)
+            {
+                return;
+            }
+
             switch (currentState)
             {
                 case CharacterState.Idle:
                     break;
                 case CharacterState.Attack:
+                    animator.SetTrigger(attackAnimator);
+
+                    transform.rotation = Quaternion.LookRotation(playerTransform.position - transform.position);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            isEnter = true;
         }
 
         protected override void Loop()
@@ -55,6 +65,11 @@ namespace CharacterScript
             }
         }
 
+        public void AttackAnimationEnd()
+        {
+            ExitStateTo(CharacterState.Idle);
+        }
+
         protected override void CalculateMovement()
         {
             if (Vector3.Distance(playerTransform.position, transform.position) >= navMeshAgent.stoppingDistance)
@@ -66,6 +81,8 @@ namespace CharacterScript
             {
                 navMeshAgent.SetDestination(transform.position);
                 animator.SetFloat(speedAnimator, 0f);
+
+                ExitStateTo(CharacterState.Attack);
             }
         }
     }

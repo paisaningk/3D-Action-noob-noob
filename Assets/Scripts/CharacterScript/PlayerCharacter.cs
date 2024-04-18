@@ -21,7 +21,6 @@ namespace CharacterScript
         public float attackSlideSpeed = 0.06f;
         public float attackSlideDuration = 0.4f;
 
-
         private void FixedUpdate()
         {
             Loop();
@@ -48,7 +47,6 @@ namespace CharacterScript
                 case CharacterState.Idle:
                     break;
                 case CharacterState.Attack:
-                    Debug.Log("adc");
                     animator.SetTrigger(attackAnimator);
                     attackStartTime = Time.time;
                     break;
@@ -121,6 +119,7 @@ namespace CharacterScript
             moveVelocity += Vector3.up * (verticalVelocity * Time.deltaTime);
         }
 
+        //call in animation attack
         public void AttackAnimationEnd()
         {
             ExitStateTo(CharacterState.Idle);
