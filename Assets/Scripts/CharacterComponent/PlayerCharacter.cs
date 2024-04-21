@@ -2,7 +2,7 @@
 using CharacterScript.Player;
 using UnityEngine;
 
-namespace CharacterScript
+namespace CharacterComponent
 {
     public class PlayerCharacter : Character
     {
@@ -102,6 +102,24 @@ namespace CharacterScript
             animator.SetBool(airBorneAnimator, !isGrounded);
 
             characterController.Move(moveVelocity);
+        }
+
+        protected override void ExitStateTo(CharacterState newState)
+        {
+            switch (newState)
+            {
+                case CharacterState.Idle:
+                    break;
+                case CharacterState.Attack:
+                    
+                    
+                    
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+            }
+            
+            base.ExitStateTo(newState);
         }
 
         private void ApplyGravity()

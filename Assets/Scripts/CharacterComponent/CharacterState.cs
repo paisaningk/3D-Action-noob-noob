@@ -1,4 +1,4 @@
-﻿namespace CharacterScript
+﻿namespace CharacterComponent
 {
     public enum CharacterState
     {

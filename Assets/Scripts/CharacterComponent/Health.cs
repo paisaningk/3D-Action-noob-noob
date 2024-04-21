@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CharacterScript
+namespace CharacterComponent
 {
     public class Health : MonoBehaviour
     {
@@ -26,7 +26,7 @@ namespace CharacterScript
                 currentHealth = 0;
             }
 
-            Debug.Log(gameObject.name + "Took damage :" + damage + "Current Health :" + currentHealth);
+            Debug.Log(gameObject.name + "Took damage : " + damage + "Current Health : " + currentHealth);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CharacterScript
+namespace CharacterComponent
 {
     public abstract class Character : MonoBehaviour
     {

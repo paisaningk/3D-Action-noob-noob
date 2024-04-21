@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace CharacterScript
+namespace CharacterComponent
 {
     public class EnemyCharacter : Character
     {
