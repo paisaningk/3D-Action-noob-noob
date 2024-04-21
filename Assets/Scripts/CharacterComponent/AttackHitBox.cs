@@ -19,12 +19,12 @@ namespace CharacterComponent
             // Gizmos.color = Color.green;
             // Gizmos.DrawSphere(originalPos, 0.1f);
 
-            var rayCast = RayCastTarget();
-
-            if (!rayCast.isHit) return;
-
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(rayCast.hit.point, 0.3f);
+            // var rayCast = RayCastTarget();
+            //
+            // if (!rayCast.isHit) return;
+            //
+            // Gizmos.color = Color.yellow;
+            // Gizmos.DrawSphere(rayCast.hit.point, 0.3f);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -33,7 +33,7 @@ namespace CharacterComponent
 
             if (other.TryGetComponent(out Character character))
             {
-                character.ApplyDamage(damage);
+                character.ApplyDamage(damage, transform.parent.position);
 
                 var rayCast = RayCastTarget();
 

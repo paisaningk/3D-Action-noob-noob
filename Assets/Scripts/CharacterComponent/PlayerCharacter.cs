@@ -10,6 +10,7 @@ namespace CharacterComponent
         public CharacterController characterController;
         public Camera cam;
         public PlayerInput playerInput;
+        public AnimationEventCharacter animationEventCharacter;
 
 
         [Header("Vertical")]
@@ -30,6 +31,7 @@ namespace CharacterComponent
         {
             base.OnValidate();
 
+            animationEventCharacter = GetComponent<AnimationEventCharacter>();
             playerInput = GetComponent<PlayerInput>();
             characterController = GetComponent<CharacterController>();
             cam = Camera.main;
@@ -111,14 +113,12 @@ namespace CharacterComponent
                 case CharacterState.Idle:
                     break;
                 case CharacterState.Attack:
-                    
-                    
-                    
+                    animationEventCharacter.CloseAttackHitBox();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
             }
-            
+
             base.ExitStateTo(newState);
         }
 

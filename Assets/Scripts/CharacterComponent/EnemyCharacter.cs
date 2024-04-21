@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
+using VFX;
 
 namespace CharacterComponent
 {
@@ -9,6 +10,7 @@ namespace CharacterComponent
         [Header("Component")]
         public NavMeshAgent navMeshAgent;
         public Transform playerTransform;
+        public EnemyVFXManager enemyVFXManager;
 
         private void FixedUpdate()
         {
@@ -19,6 +21,7 @@ namespace CharacterComponent
         {
             base.OnValidate();
 
+            enemyVFXManager = GetComponent<EnemyVFXManager>();
             navMeshAgent = GetComponent<NavMeshAgent>();
             navMeshAgent.speed = moveSpeed;
 
@@ -63,6 +66,13 @@ namespace CharacterComponent
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public override void ApplyDamage(int damage, Vector3 attackerPos = new())
+        {
+            base.ApplyDamage(damage, attackerPos);
+
+            enemyVFXManager.PlayBeingHitVFX(attackerPos);
         }
 
         public void AttackAnimationEnd()
