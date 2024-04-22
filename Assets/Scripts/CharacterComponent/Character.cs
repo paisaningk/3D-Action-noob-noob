@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace CharacterComponent
 {
@@ -14,12 +15,17 @@ namespace CharacterComponent
         [Header("State")]
         public CharacterState currentState;
         public bool isEnter;
+        public SkinnedMeshRenderer skinnedMeshRenderer;
+
 
         [Header("AnimatorHash")]
         protected readonly int airBorneAnimator = Animator.StringToHash("AirBorne");
         protected readonly int attackAnimator = Animator.StringToHash("Attack");
+        private readonly int blink = Shader.PropertyToID("_blink");
         protected readonly int speedAnimator = Animator.StringToHash("Speed");
-        protected Health health;
+        private Health health;
+        private MaterialPropertyBlock materialPropertyBlock;
+
 
         protected virtual void Start()
         {
@@ -30,6 +36,11 @@ namespace CharacterComponent
         {
             animator = GetComponent<Animator>();
             health = GetComponent<Health>();
+
+            skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+            materialPropertyBlock = new MaterialPropertyBlock();
+
+            skinnedMeshRenderer.GetPropertyBlock(materialPropertyBlock);
         }
 
         protected abstract void EnterState();
@@ -58,11 +69,24 @@ namespace CharacterComponent
                 Debug.Log("Can't found health", gameObject);
             }
 
+            StartCoroutine(MaterialBlink());
+
             health.ApplyDamage(damage);
         }
 
         protected virtual void CalculateMovement()
         {
+        }
+
+        private IEnumerator MaterialBlink()
+        {
+            materialPropertyBlock.SetFloat(blink, 0.4f);
+            skinnedMeshRenderer.SetPropertyBlock(materialPropertyBlock);
+
+            yield return new WaitForSeconds(0.2f);
+
+            materialPropertyBlock.SetFloat(blink, 0);
+            skinnedMeshRenderer.SetPropertyBlock(materialPropertyBlock);
         }
     }
 }
