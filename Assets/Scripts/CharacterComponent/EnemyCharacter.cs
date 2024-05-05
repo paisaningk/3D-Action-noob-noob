@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using VFX;
@@ -11,6 +12,7 @@ namespace CharacterComponent
         public NavMeshAgent navMeshAgent;
         public Transform playerTransform;
         public EnemyVFXManager enemyVFXManager;
+        public DropItem dropItem;
 
         private void FixedUpdate()
         {
@@ -63,6 +65,8 @@ namespace CharacterComponent
                     break;
                 case CharacterState.Attack:
                     break;
+                case CharacterState.Dead:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -71,6 +75,11 @@ namespace CharacterComponent
         public override void ApplyDamage(int damage, Vector3 attackerPos = new())
         {
             base.ApplyDamage(damage, attackerPos);
+
+            if (isDead)
+            {
+                return;
+            }
 
             enemyVFXManager.PlayBeingHitVFX(attackerPos);
         }
@@ -94,6 +103,35 @@ namespace CharacterComponent
 
                 ExitStateTo(CharacterState.Attack);
             }
+        }
+
+        protected override IEnumerator MaterialDissolve()
+        {
+            yield return new WaitForSeconds(2);
+
+            var dissolveTimeDuration = 2f;
+            var currentDissolveTime = 0f;
+            var dissolveHighStart = 20f;
+            var dissolveHighTarget = -10f;
+
+            materialPropertyBlock.SetFloat(enableDissolve, 1);
+            skinnedMeshRenderer.SetPropertyBlock(materialPropertyBlock);
+
+            while (currentDissolveTime < dissolveTimeDuration)
+            {
+                currentDissolveTime += Time.deltaTime;
+                var dissolveHigh = Mathf.Lerp(dissolveHighStart, dissolveHighTarget,
+                    currentDissolveTime / dissolveTimeDuration);
+
+                materialPropertyBlock.SetFloat(dissolveHeight, dissolveHigh);
+                skinnedMeshRenderer.SetPropertyBlock(materialPropertyBlock);
+
+                yield return null;
+            }
+
+            dropItem.Drop();
+
+            Destroy(gameObject);
         }
     }
 }

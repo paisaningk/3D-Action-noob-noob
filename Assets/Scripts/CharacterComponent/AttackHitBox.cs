@@ -35,6 +35,11 @@ namespace CharacterComponent
             {
                 character.ApplyDamage(damage, transform.parent.position);
 
+                if (character.isDead)
+                {
+                    return;
+                }
+
                 var rayCast = RayCastTarget();
 
                 if (rayCast.isHit)

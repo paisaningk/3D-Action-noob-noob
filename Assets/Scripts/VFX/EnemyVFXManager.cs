@@ -39,6 +39,7 @@ namespace VFX
             var newSplashVFX = Instantiate(beingHitSplashVFX, splashPos, quaternion.identity);
             newSplashVFX.Play();
 
+            //TODO แก้นี้
             Destroy(newSplashVFX, 10f);
         }
     }

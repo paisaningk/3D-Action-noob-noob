@@ -9,6 +9,8 @@ namespace CharacterScript.Player
         private Input input;
         private Input.PlayerActions playerInput;
 
+        
+        
         public void Start()
         {
             input = new Input();
