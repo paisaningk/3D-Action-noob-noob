@@ -4,6 +4,7 @@
     {
         Idle,
         Attack,
-        Dead
+        Dead,
+        Hit
     }
 }

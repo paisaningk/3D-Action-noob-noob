@@ -49,6 +49,10 @@ namespace CharacterComponent
 
                     transform.rotation = Quaternion.LookRotation(playerTransform.position - transform.position);
                     break;
+                case CharacterState.Dead:
+                    break;
+                case CharacterState.Hit:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -66,6 +70,8 @@ namespace CharacterComponent
                 case CharacterState.Attack:
                     break;
                 case CharacterState.Dead:
+                    break;
+                case CharacterState.Hit:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -91,6 +97,11 @@ namespace CharacterComponent
 
         protected override void CalculateMovement()
         {
+            if (!playerTransform)
+            {
+                return;
+            }
+
             if (Vector3.Distance(playerTransform.position, transform.position) >= navMeshAgent.stoppingDistance)
             {
                 navMeshAgent.SetDestination(playerTransform.position);

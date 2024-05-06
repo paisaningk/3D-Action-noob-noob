@@ -22,6 +22,7 @@ namespace CharacterComponent
         [Header("AnimatorHash")]
         protected readonly int airBorneAnimator = Animator.StringToHash("AirBorne");
         protected readonly int attackAnimator = Animator.StringToHash("Attack");
+        protected readonly int beingHit = Animator.StringToHash("BeingHit");
         private readonly int blink = Shader.PropertyToID("_blink");
         private readonly int dead = Animator.StringToHash("Dead");
         protected readonly int dissolveHeight = Shader.PropertyToID("_dissolve_height");
@@ -58,6 +59,7 @@ namespace CharacterComponent
                 CharacterState.Idle => CharacterState.Idle,
                 CharacterState.Attack => CharacterState.Attack,
                 CharacterState.Dead => CharacterState.Dead,
+                CharacterState.Hit => CharacterState.Hit,
                 _ => currentState
             };
 

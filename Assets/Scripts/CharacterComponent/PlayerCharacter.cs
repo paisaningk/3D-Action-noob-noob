@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using CharacterScript.Player;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace CharacterComponent
         public Camera cam;
         public PlayerInput playerInput;
         public AnimationEventCharacter animationEventCharacter;
+        public Vector3 impactOnCharacter;
 
 
         [Header("Vertical")]
@@ -21,6 +23,11 @@ namespace CharacterComponent
         public float attackStartTime;
         public float attackSlideSpeed = 0.06f;
         public float attackSlideDuration = 0.4f;
+
+        [Header("Invincible")]
+        public bool isInvincible;
+        public float invincibleDuration = 3;
+
 
         private void FixedUpdate()
         {
@@ -52,6 +59,12 @@ namespace CharacterComponent
                     animator.SetTrigger(attackAnimator);
                     attackStartTime = Time.time;
                     break;
+                case CharacterState.Dead:
+                    break;
+                case CharacterState.Hit:
+                    animator.SetTrigger(beingHit);
+                    StartCoroutine(InvincibleTime());
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -61,6 +74,7 @@ namespace CharacterComponent
 
         protected override void Loop()
         {
+            moveVelocity = Vector3.zero;
             switch (currentState)
             {
                 case CharacterState.Idle:
@@ -69,9 +83,21 @@ namespace CharacterComponent
                 case CharacterState.Attack:
                     AttackStateLoop();
                     break;
+                case CharacterState.Dead:
+                    break;
+                case CharacterState.Hit:
+                    if (impactOnCharacter.magnitude > 0.2f)
+                    {
+                        moveVelocity = impactOnCharacter * Time.deltaTime;
+                    }
+
+                    impactOnCharacter = Vector3.Lerp(impactOnCharacter, Vector3.zero, Time.deltaTime * 5);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            characterController.Move(moveVelocity);
         }
 
         private void AttackStateLoop()
@@ -85,8 +111,6 @@ namespace CharacterComponent
             }
 
             ApplyGravity();
-
-            characterController.Move(moveVelocity);
         }
 
         private void IdleStateLoop()
@@ -102,8 +126,6 @@ namespace CharacterComponent
             ApplyGravity();
 
             animator.SetBool(airBorneAnimator, !isGrounded);
-
-            characterController.Move(moveVelocity);
         }
 
         protected override void ExitStateTo(CharacterState newState)
@@ -114,6 +136,10 @@ namespace CharacterComponent
                     break;
                 case CharacterState.Attack:
                     animationEventCharacter.CloseAttackHitBox();
+                    break;
+                case CharacterState.Dead:
+                    break;
+                case CharacterState.Hit:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
@@ -141,6 +167,44 @@ namespace CharacterComponent
         public void AttackAnimationEnd()
         {
             ExitStateTo(CharacterState.Idle);
+        }
+
+        public void HitAnimationEnd()
+        {
+            ExitStateTo(CharacterState.Idle);
+        }
+
+        public override void ApplyDamage(int damage, Vector3 attackerPos = new())
+        {
+            if (isInvincible)
+            {
+                return;
+            }
+
+            base.ApplyDamage(damage, attackerPos);
+
+            if (isDead)
+            {
+                return;
+            }
+
+            AddImpact(attackerPos, 10);
+            ExitStateTo(CharacterState.Hit);
+        }
+
+        private IEnumerator InvincibleTime()
+        {
+            isInvincible = true;
+            yield return new WaitForSeconds(invincibleDuration);
+            isInvincible = false;
+        }
+
+        private void AddImpact(Vector3 attack, float force)
+        {
+            var impactDir = transform.position - attack;
+            impactDir.Normalize();
+            impactDir.y = 0;
+            impactOnCharacter = impactDir * force;
         }
 
         protected override void CalculateMovement()
