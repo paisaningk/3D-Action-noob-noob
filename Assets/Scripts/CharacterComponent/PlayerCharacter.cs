@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using CharacterScript.Player;
+using Item;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace CharacterComponent
 {
@@ -13,6 +15,7 @@ namespace CharacterComponent
         public PlayerInput playerInput;
         public AnimationEventCharacter animationEventCharacter;
         public Vector3 impactOnCharacter;
+        public VisualEffect healVFX;
 
 
         [Header("Vertical")]
@@ -205,6 +208,22 @@ namespace CharacterComponent
             impactDir.Normalize();
             impactDir.y = 0;
             impactOnCharacter = impactDir * force;
+        }
+
+        public override void PickUp(ItemPickUp itemPickUp)
+        {
+            base.PickUp(itemPickUp);
+
+            switch (itemPickUp.pickUpType)
+            {
+                case PickUpType.Heal:
+                    healVFX.Play();
+                    break;
+                case PickUpType.Coin:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         protected override void CalculateMovement()

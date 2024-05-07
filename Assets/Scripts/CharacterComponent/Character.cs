@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Item;
 using UnityEngine;
 
 namespace CharacterComponent
@@ -141,6 +143,20 @@ namespace CharacterComponent
             }
 
             Destroy(gameObject);
+        }
+
+        public virtual void PickUp(ItemPickUp itemPickUp)
+        {
+            switch (itemPickUp.pickUpType)
+            {
+                case PickUpType.Heal:
+                    health.currentHealth += itemPickUp.value;
+                    break;
+                case PickUpType.Coin:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
