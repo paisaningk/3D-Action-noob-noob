@@ -4,6 +4,7 @@ using CharacterScript.Player;
 using Item;
 using UnityEngine;
 using UnityEngine.VFX;
+using VFX;
 
 namespace CharacterComponent
 {
@@ -16,6 +17,7 @@ namespace CharacterComponent
         public AnimationEventCharacter animationEventCharacter;
         public Vector3 impactOnCharacter;
         public VisualEffect healVFX;
+        public PlayerVFXManager playerVFXManager;
 
 
         [Header("Vertical")]
@@ -26,6 +28,7 @@ namespace CharacterComponent
         public float attackStartTime;
         public float attackSlideSpeed = 0.06f;
         public float attackSlideDuration = 0.4f;
+        public float attackAnimationDuration;
 
         [Header("Invincible")]
         public bool isInvincible;
@@ -113,6 +116,19 @@ namespace CharacterComponent
                 moveVelocity = Vector3.Lerp(transform.forward * attackSlideSpeed, Vector3.zero, lerpTime);
             }
 
+            if (playerInput.isMousePressed && characterController.isGrounded)
+            {
+                var currentClipName = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+                attackAnimationDuration = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
+                if (currentClipName != "LittleAdventurerAndie_ATTACK_03" && attackAnimationDuration > 0.5f && attackSlideDuration < 0.7f)
+                {
+                    playerInput.isMousePressed = false;
+                    
+                    ExitStateTo(CharacterState.Attack);
+                }
+            }
+
             ApplyGravity();
         }
 
@@ -139,6 +155,7 @@ namespace CharacterComponent
                     break;
                 case CharacterState.Attack:
                     animationEventCharacter.CloseAttackHitBox();
+                    playerVFXManager.StopVFX();
                     break;
                 case CharacterState.Dead:
                     break;
