@@ -32,7 +32,7 @@ namespace VFX
             attack2.Play();
         }
 
-        public void StopVFX()
+        public void StopAllAttackVFX()
         {
             attack1.Simulate(0);
             attack1.Stop();

@@ -155,7 +155,7 @@ namespace CharacterComponent
                     break;
                 case CharacterState.Attack:
                     animationEventCharacter.CloseAttackHitBox();
-                    playerVFXManager.StopVFX();
+                    playerVFXManager.StopAllAttackVFX();
                     break;
                 case CharacterState.Dead:
                     break;
