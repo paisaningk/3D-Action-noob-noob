@@ -20,20 +20,25 @@ namespace CharacterComponent
         public PlayerVFXManager playerVFXManager;
 
 
-        [Header("Vertical")]
+        [Header("Vertical")] [Space]
         public bool isGrounded;
         public float verticalVelocity;
         public float gravity = -9.8f;
 
+        [Header("Attack")] [Space]
         public float attackStartTime;
         public float attackSlideSpeed = 0.06f;
         public float attackSlideDuration = 0.4f;
         public float attackAnimationDuration;
 
-        [Header("Invincible")]
+        [Header("Invincible")] [Space]
         public bool isInvincible;
         public float invincibleDuration = 3;
 
+
+        [Header("Slide")] [Space]
+        public float slideSpeed = 9f;
+        private readonly int slide = Animator.StringToHash("Slide");
 
         private void FixedUpdate()
         {
@@ -71,6 +76,9 @@ namespace CharacterComponent
                     animator.SetTrigger(beingHit);
                     StartCoroutine(InvincibleTime());
                     break;
+                case CharacterState.Slide:
+                    animator.SetTrigger(slide);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -99,6 +107,9 @@ namespace CharacterComponent
 
                     impactOnCharacter = Vector3.Lerp(impactOnCharacter, Vector3.zero, Time.deltaTime * 5);
                     break;
+                case CharacterState.Slide:
+                    moveVelocity = transform.forward * (slideSpeed * Time.deltaTime);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -121,10 +132,11 @@ namespace CharacterComponent
                 var currentClipName = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
                 attackAnimationDuration = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
-                if (currentClipName != "LittleAdventurerAndie_ATTACK_03" && attackAnimationDuration > 0.5f && attackSlideDuration < 0.7f)
+                if (currentClipName != "LittleAdventurerAndie_ATTACK_03" && attackAnimationDuration > 0.5f &&
+                    attackSlideDuration < 0.7f)
                 {
                     playerInput.isMousePressed = false;
-                    
+
                     ExitStateTo(CharacterState.Attack);
                 }
             }
@@ -137,6 +149,12 @@ namespace CharacterComponent
             if (playerInput.isMousePressed && characterController.isGrounded)
             {
                 ExitStateTo(CharacterState.Attack);
+                return;
+            }
+
+            if (playerInput.isSpaceKeyPressed && characterController.isGrounded)
+            {
+                ExitStateTo(CharacterState.Slide);
                 return;
             }
 
@@ -160,6 +178,8 @@ namespace CharacterComponent
                 case CharacterState.Dead:
                     break;
                 case CharacterState.Hit:
+                    break;
+                case CharacterState.Slide:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
@@ -190,6 +210,11 @@ namespace CharacterComponent
         }
 
         public void HitAnimationEnd()
+        {
+            ExitStateTo(CharacterState.Idle);
+        }
+
+        public void SlideAnimationEnd()
         {
             ExitStateTo(CharacterState.Idle);
         }

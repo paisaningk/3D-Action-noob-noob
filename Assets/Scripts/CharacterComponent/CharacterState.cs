@@ -5,6 +5,7 @@
         Idle,
         Attack,
         Dead,
-        Hit
+        Hit,
+        Slide
     }
 }

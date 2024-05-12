@@ -62,6 +62,7 @@ namespace CharacterComponent
                 CharacterState.Attack => CharacterState.Attack,
                 CharacterState.Dead => CharacterState.Dead,
                 CharacterState.Hit => CharacterState.Hit,
+                CharacterState.Slide => CharacterState.Slide,
                 _ => currentState
             };
 
