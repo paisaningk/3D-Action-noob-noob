@@ -10,15 +10,19 @@ namespace CharacterComponent
         [Header("Animator")]
         public Animator animator;
 
-        [Header("Move")]
+        [Header("Move")] [Space]
         public float moveSpeed = 5;
         public Vector3 moveVelocity;
 
-        [Header("State")]
+        [Header("State")] [Space]
         public CharacterState currentState;
         public SkinnedMeshRenderer skinnedMeshRenderer;
         public bool isEnter;
         public bool isDead;
+
+        [Header("Invincible")] [Space]
+        public bool isInvincible;
+        public float invincibleDuration = 3;
 
 
         [Header("AnimatorHash")]
@@ -36,6 +40,9 @@ namespace CharacterComponent
 
         protected virtual void Start()
         {
+            materialPropertyBlock = new MaterialPropertyBlock();
+            skinnedMeshRenderer.GetPropertyBlock(materialPropertyBlock);
+
             EnterState();
         }
 
@@ -45,9 +52,6 @@ namespace CharacterComponent
             health = GetComponent<Health>();
 
             skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-            materialPropertyBlock = new MaterialPropertyBlock();
-
-            skinnedMeshRenderer.GetPropertyBlock(materialPropertyBlock);
         }
 
         protected abstract void EnterState();
@@ -63,6 +67,7 @@ namespace CharacterComponent
                 CharacterState.Dead => CharacterState.Dead,
                 CharacterState.Hit => CharacterState.Hit,
                 CharacterState.Slide => CharacterState.Slide,
+                CharacterState.Spawn => CharacterState.Spawn,
                 _ => currentState
             };
 
@@ -80,6 +85,11 @@ namespace CharacterComponent
 
         public virtual void ApplyDamage(int damage, Vector3 attackerPos = new())
         {
+            if (isInvincible)
+            {
+                return;
+            }
+
             if (!health)
             {
                 Debug.Log("Can't found health", gameObject);

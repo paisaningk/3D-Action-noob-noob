@@ -31,10 +31,6 @@ namespace CharacterComponent
         public float attackSlideDuration = 0.4f;
         public float attackAnimationDuration;
 
-        [Header("Invincible")] [Space]
-        public bool isInvincible;
-        public float invincibleDuration = 3;
-
 
         [Header("Slide")] [Space]
         public float slideSpeed = 9f;
@@ -220,11 +216,6 @@ namespace CharacterComponent
 
         public override void ApplyDamage(int damage, Vector3 attackerPos = new())
         {
-            if (isInvincible)
-            {
-                return;
-            }
-
             base.ApplyDamage(damage, attackerPos);
 
             if (isDead)

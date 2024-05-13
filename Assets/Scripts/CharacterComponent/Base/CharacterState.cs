@@ -6,6 +6,7 @@
         Attack,
         Dead,
         Hit,
-        Slide
+        Slide,
+        Spawn
     }
 }

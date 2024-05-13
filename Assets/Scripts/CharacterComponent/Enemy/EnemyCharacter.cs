@@ -14,6 +14,23 @@ namespace CharacterComponent
         public EnemyVFXManager enemyVFXManager;
         public DropItem dropItem;
 
+        [Header("Spawn")]
+        public CharacterState starState = CharacterState.Spawn;
+        public float currentSpawnTime;
+        public float spawnDuration;
+
+        protected override void Start()
+        {
+            currentState = starState;
+
+            base.Start();
+
+            if (!playerTransform)
+            {
+                playerTransform = FindObjectOfType<PlayerCharacter>().transform;
+            }
+        }
+
         private void FixedUpdate()
         {
             Loop();
@@ -26,11 +43,6 @@ namespace CharacterComponent
             enemyVFXManager = GetComponent<EnemyVFXManager>();
             navMeshAgent = GetComponent<NavMeshAgent>();
             navMeshAgent.speed = moveSpeed;
-
-            if (!playerTransform)
-            {
-                playerTransform = FindObjectOfType<PlayerCharacter>().transform;
-            }
         }
 
         protected override void EnterState()
@@ -53,6 +65,14 @@ namespace CharacterComponent
                     break;
                 case CharacterState.Hit:
                     break;
+                case CharacterState.Slide:
+                    break;
+                case CharacterState.Spawn:
+                    isInvincible = true;
+                    currentSpawnTime = spawnDuration;
+
+                    StartCoroutine(MaterialAppear());
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -73,9 +93,44 @@ namespace CharacterComponent
                     break;
                 case CharacterState.Hit:
                     break;
+                case CharacterState.Slide:
+                    break;
+                case CharacterState.Spawn:
+                    currentSpawnTime -= Time.deltaTime;
+
+                    if (currentSpawnTime <= 0)
+                    {
+                        ExitStateTo(CharacterState.Idle);
+                    }
+
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        protected override void ExitStateTo(CharacterState newState)
+        {
+            switch (currentState)
+            {
+                case CharacterState.Idle:
+                    break;
+                case CharacterState.Attack:
+                    break;
+                case CharacterState.Dead:
+                    break;
+                case CharacterState.Hit:
+                    break;
+                case CharacterState.Slide:
+                    break;
+                case CharacterState.Spawn:
+                    isInvincible = false;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            base.ExitStateTo(newState);
         }
 
         public override void ApplyDamage(int damage, Vector3 attackerPos = new())
@@ -143,6 +198,32 @@ namespace CharacterComponent
             dropItem.Drop();
 
             Destroy(gameObject);
+        }
+
+        protected IEnumerator MaterialAppear()
+        {
+            var dissolveTimeDuration = spawnDuration;
+            var currentDissolveTime = 0f;
+            var dissolveHighStart = -10f;
+            var dissolveHighTarget = 20f;
+
+            materialPropertyBlock.SetFloat(enableDissolve, 1);
+            skinnedMeshRenderer.SetPropertyBlock(materialPropertyBlock);
+
+            while (currentDissolveTime < dissolveTimeDuration)
+            {
+                currentDissolveTime += Time.deltaTime;
+                var dissolveHigh = Mathf.Lerp(dissolveHighStart, dissolveHighTarget,
+                    currentDissolveTime / dissolveTimeDuration);
+
+                materialPropertyBlock.SetFloat(dissolveHeight, dissolveHigh);
+                skinnedMeshRenderer.SetPropertyBlock(materialPropertyBlock);
+
+                yield return null;
+            }
+
+            materialPropertyBlock.SetFloat(enableDissolve, 0);
+            skinnedMeshRenderer.SetPropertyBlock(materialPropertyBlock);
         }
 
         public void RotateToTarget()
