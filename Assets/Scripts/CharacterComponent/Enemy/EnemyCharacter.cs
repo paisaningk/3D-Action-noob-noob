@@ -144,5 +144,13 @@ namespace CharacterComponent
 
             Destroy(gameObject);
         }
+
+        public void RotateToTarget()
+        {
+            if (currentState != CharacterState.Dead)
+            {
+                transform.LookAt(playerTransform, Vector3.up);
+            }
+        }
     }
 }

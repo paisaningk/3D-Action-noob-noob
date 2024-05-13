@@ -26,7 +26,7 @@ namespace CharacterComponent
                 currentHealth = 0;
             }
 
-            Debug.Log(gameObject.name + "Took damage : " + damage + "Current Health : " + currentHealth);
+            Debug.Log(gameObject.name + "Took damage : " + damage + " Current Health : " + currentHealth);
         }
     }
 }

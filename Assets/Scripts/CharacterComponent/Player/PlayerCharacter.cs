@@ -89,6 +89,7 @@ namespace CharacterComponent
         protected override void Loop()
         {
             moveVelocity = Vector3.zero;
+
             switch (currentState)
             {
                 case CharacterState.Idle:
@@ -113,6 +114,8 @@ namespace CharacterComponent
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            ApplyGravity();
 
             characterController.Move(moveVelocity);
         }
@@ -140,8 +143,6 @@ namespace CharacterComponent
                     ExitStateTo(CharacterState.Attack);
                 }
             }
-
-            ApplyGravity();
         }
 
         private void IdleStateLoop()
@@ -159,8 +160,6 @@ namespace CharacterComponent
             }
 
             CalculateMovement();
-
-            ApplyGravity();
 
             animator.SetBool(airBorneAnimator, !isGrounded);
         }
