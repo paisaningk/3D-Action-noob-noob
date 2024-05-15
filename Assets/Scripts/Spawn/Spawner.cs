@@ -1,17 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CharacterComponent;
 using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Spawn
 {
     public class Spawner : MonoBehaviour
     {
-        public List<GameObject> enemyInZone;
+        public List<EnemyCharacter> enemyInZone;
         public List<SpawnPoint> spawnPointList;
         public bool hasSpawn;
+        public int enemyInSpawner;
         public Collider colliderToDraw;
+
+        public UnityEvent onEnemyAllDead;
 
         private void OnDrawGizmos()
         {
@@ -50,8 +55,26 @@ namespace Spawn
             hasSpawn = true;
 
             foreach (var spawnPoint in spawnPointList.Where(spawnPoint => spawnPoint.enemyToSpawn))
-                enemyInZone.Add(
-                    Instantiate(spawnPoint.enemyToSpawn, spawnPoint.transform.position, quaternion.identity));
+            {
+                var instantiate = Instantiate(spawnPoint.enemyToSpawn, spawnPoint.transform.position,
+                    quaternion.identity);
+
+                instantiate.spawner = this;
+
+                enemyInZone.Add(instantiate);
+            }
+
+            enemyInSpawner = enemyInZone.Count;
+        }
+
+        public void CheckEnemyDead()
+        {
+            enemyInSpawner--;
+
+            if (enemyInSpawner <= 0)
+            {
+                onEnemyAllDead?.Invoke();
+            }
         }
 
         [Button]

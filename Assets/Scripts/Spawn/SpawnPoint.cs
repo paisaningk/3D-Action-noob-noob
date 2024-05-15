@@ -1,11 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using CharacterComponent;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Spawn
 {
     public class SpawnPoint : MonoBehaviour
     {
-        public GameObject enemyToSpawn;
+        public EnemyCharacter enemyToSpawn;
 
         [Button]
         public void RenameGameObjectHaveEnemy()

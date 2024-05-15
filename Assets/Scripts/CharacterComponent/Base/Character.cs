@@ -23,6 +23,7 @@ namespace CharacterComponent
         [Header("Invincible")] [Space]
         public bool isInvincible;
         public float invincibleDuration = 3;
+        public Health health;
 
 
         [Header("AnimatorHash")]
@@ -34,7 +35,6 @@ namespace CharacterComponent
         protected readonly int dissolveHeight = Shader.PropertyToID("_dissolve_height");
         protected readonly int enableDissolve = Shader.PropertyToID("_enableDissolve");
         protected readonly int speedAnimator = Animator.StringToHash("Speed");
-        private Health health;
         protected MaterialPropertyBlock materialPropertyBlock;
 
 

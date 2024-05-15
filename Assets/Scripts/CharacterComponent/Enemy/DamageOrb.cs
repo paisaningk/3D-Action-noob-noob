@@ -1,4 +1,4 @@
-﻿using CharacterComponent;
+﻿using CharacterComponent.Player;
 using Unity.Mathematics;
 using UnityEngine;
 

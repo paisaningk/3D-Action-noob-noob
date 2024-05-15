@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using CharacterComponent.Player;
+using Spawn;
 using UnityEngine;
 using UnityEngine.AI;
 using VFX;
@@ -18,6 +20,7 @@ namespace CharacterComponent
         public CharacterState starState = CharacterState.Spawn;
         public float currentSpawnTime;
         public float spawnDuration;
+        public Spawner spawner;
 
         protected override void Start()
         {
@@ -137,12 +140,19 @@ namespace CharacterComponent
         {
             base.ApplyDamage(damage, attackerPos);
 
-            if (isDead)
+            if (isDead || isInvincible)
             {
                 return;
             }
 
             enemyVFXManager.PlayBeingHitVFX(attackerPos);
+        }
+
+        protected override void IsDead()
+        {
+            base.IsDead();
+
+            spawner.CheckEnemyDead();
         }
 
         public void AttackAnimationEnd()

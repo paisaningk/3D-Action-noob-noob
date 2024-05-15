@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.VFX;
 using VFX;
 
-namespace CharacterComponent
+namespace CharacterComponent.Player
 {
     public class PlayerCharacter : Character
     {

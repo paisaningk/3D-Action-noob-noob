@@ -165,6 +165,7 @@ MonoBehaviour:
   isDead: 0
   isInvincible: 0
   invincibleDuration: 3
+  health: {fileID: 4696000319165344887}
   navMeshAgent: {fileID: 5611743707413685459}
   playerTransform: {fileID: 0}
   enemyVFXManager: {fileID: 5361015722412497222}
@@ -172,6 +173,7 @@ MonoBehaviour:
   starState: 5
   currentSpawnTime: 0
   spawnDuration: 3
+  spawner: {fileID: 0}
 --- !u!114 &5361015722412497222
 MonoBehaviour:
   m_ObjectHideFlags: 0
