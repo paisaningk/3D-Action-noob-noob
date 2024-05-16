@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using UI;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace CharacterScript.Player
 {
@@ -16,6 +18,7 @@ namespace CharacterScript.Player
             input.Enable();
 
             playerInput = input.Player;
+            playerInput.Pause.performed += PauseOnPerformed;
         }
 
         public void Update()
@@ -23,6 +26,17 @@ namespace CharacterScript.Player
             isMousePressed = playerInput.Attack.IsPressed();
             directionMove = playerInput.Move.ReadValue<Vector2>();
             isSpaceKeyPressed = playerInput.Slide.IsPressed();
+        }
+
+        public void OnDestroy()
+        {
+            playerInput.Pause.performed -= PauseOnPerformed;
+        }
+
+
+        private void PauseOnPerformed(InputAction.CallbackContext obj)
+        {
+            MainUIManager.Instance.TogglePauseUI();
         }
     }
 }

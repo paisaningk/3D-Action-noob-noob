@@ -6,14 +6,11 @@ namespace CharacterComponent
     {
         public int maxHealth;
         public int currentHealth;
-
-        public Character character;
+        public float CurrentHealthPercentage => (float)currentHealth / maxHealth;
 
         private void OnValidate()
         {
             currentHealth = maxHealth;
-
-            character = GetComponent<Character>();
         }
 
 

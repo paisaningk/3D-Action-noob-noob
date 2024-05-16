@@ -9,8 +9,10 @@ namespace CharacterComponent
     {
         [Header("Animator")]
         public Animator animator;
+        public CharacterController characterController;
 
         [Header("Move")] [Space]
+        public Vector3 impactOnCharacter;
         public float moveSpeed = 5;
         public Vector3 moveVelocity;
 
@@ -50,6 +52,7 @@ namespace CharacterComponent
         {
             animator = GetComponent<Animator>();
             health = GetComponent<Health>();
+            characterController = GetComponent<CharacterController>();
 
             skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         }
@@ -154,6 +157,14 @@ namespace CharacterComponent
             }
 
             Destroy(gameObject);
+        }
+
+        public void AddImpact(Vector3 attack, float force)
+        {
+            var impactDir = transform.position - attack;
+            impactDir.Normalize();
+            impactDir.y = 0;
+            impactOnCharacter = impactDir * force;
         }
 
         public virtual void PickUp(ItemPickUp itemPickUp)

@@ -118,18 +118,18 @@ Material:
     m_Ints: []
     m_Floats:
     - Blink: 0
-    - Brightness: 0.779
+    - Brightness: 1
     - ClearCoat: 0
     - ClearCoatSmoothness: 1
-    - DissolveEdgeWidth: 0.5
+    - DissolveEdgeWidth: 5.26
     - DissolveScale: 100
-    - Dissolve_Width: 6.86
+    - Dissolve_Width: 2.99
     - Edge_Width: 0.5
-    - Fresnel: 1.59
+    - Fresnel: 5
     - Height: 16
     - Metallic: 1
     - Scale: 50
-    - Smoothness: 0.69
+    - Smoothness: 1
     - Use_Fresnel: 1
     - _AlphaClip: 0
     - _Blend: 0
@@ -159,8 +159,8 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - _blink: 0
-    - _dissolve_height: 300
-    - _enableDissolve: 0
+    - _dissolve_height: 30
+    - _enableDissolve: 1
     m_Colors:
     - Blink_Color: {r: 1, g: 1, b: 1, a: 1}
     - DissolveEdgeColor: {r: 29.85706, g: 0, b: 0, a: 0}

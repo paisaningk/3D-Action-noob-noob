@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9024376794708611348}
   - component: {fileID: 3028667204256506564}
+  - component: {fileID: 5564570105285511072}
   m_Layer: 0
   m_Name: HealOrb
   m_TagString: Untagged
@@ -54,6 +55,21 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &5564570105285511072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3508775261874000103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddcb248d4acf49bc94e0198e445b2e8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickUpType: 0
+  value: 20
+  collectedVFX: {fileID: 0}
 --- !u!1001 &3423146164626214801
 PrefabInstance:
   m_ObjectHideFlags: 0

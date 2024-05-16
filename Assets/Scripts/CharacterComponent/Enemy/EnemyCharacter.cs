@@ -22,6 +22,7 @@ namespace CharacterComponent
         public float spawnDuration;
         public Spawner spawner;
 
+
         protected override void Start()
         {
             currentState = starState;
@@ -85,6 +86,13 @@ namespace CharacterComponent
 
         protected override void Loop()
         {
+            if (impactOnCharacter.magnitude > 0.2f)
+            {
+                moveVelocity = impactOnCharacter * Time.deltaTime;
+            }
+
+            impactOnCharacter = Vector3.Lerp(impactOnCharacter, Vector3.zero, Time.deltaTime * 5);
+
             switch (currentState)
             {
                 case CharacterState.Idle:
@@ -110,6 +118,11 @@ namespace CharacterComponent
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            if (currentState == CharacterState.Idle) return;
+
+            characterController.Move(moveVelocity);
+            moveVelocity = Vector3.zero;
         }
 
         protected override void ExitStateTo(CharacterState newState)
@@ -127,7 +140,6 @@ namespace CharacterComponent
                 case CharacterState.Slide:
                     break;
                 case CharacterState.Spawn:
-                    isInvincible = false;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -145,14 +157,8 @@ namespace CharacterComponent
                 return;
             }
 
+            AddImpact(attackerPos, 5.5f);
             enemyVFXManager.PlayBeingHitVFX(attackerPos);
-        }
-
-        protected override void IsDead()
-        {
-            base.IsDead();
-
-            spawner.CheckEnemyDead();
         }
 
         public void AttackAnimationEnd()
@@ -183,6 +189,8 @@ namespace CharacterComponent
 
         protected override IEnumerator MaterialDissolve()
         {
+            spawner.CheckEnemyDead();
+
             yield return new WaitForSeconds(2);
 
             var dissolveTimeDuration = 2f;
@@ -231,6 +239,8 @@ namespace CharacterComponent
 
                 yield return null;
             }
+
+            isInvincible = false;
 
             materialPropertyBlock.SetFloat(enableDissolve, 0);
             skinnedMeshRenderer.SetPropertyBlock(materialPropertyBlock);

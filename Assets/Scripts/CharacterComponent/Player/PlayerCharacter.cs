@@ -11,11 +11,9 @@ namespace CharacterComponent.Player
     public class PlayerCharacter : Character
     {
         [Header("Component")]
-        public CharacterController characterController;
         public Camera cam;
         public PlayerInput playerInput;
         public AnimationEventCharacter animationEventCharacter;
-        public Vector3 impactOnCharacter;
         public VisualEffect healVFX;
         public PlayerVFXManager playerVFXManager;
 
@@ -31,6 +29,8 @@ namespace CharacterComponent.Player
         public float attackSlideDuration = 0.4f;
         public float attackAnimationDuration;
 
+        [Header("Coin")]
+        public int coin;
 
         [Header("Slide")] [Space]
         public float slideSpeed = 9f;
@@ -47,7 +47,6 @@ namespace CharacterComponent.Player
 
             animationEventCharacter = GetComponent<AnimationEventCharacter>();
             playerInput = GetComponent<PlayerInput>();
-            characterController = GetComponent<CharacterController>();
             cam = Camera.main;
         }
 
@@ -63,6 +62,8 @@ namespace CharacterComponent.Player
                 case CharacterState.Idle:
                     break;
                 case CharacterState.Attack:
+                    RotateToCursor();
+
                     animator.SetTrigger(attackAnimator);
                     attackStartTime = Time.time;
                     break;
@@ -234,14 +235,6 @@ namespace CharacterComponent.Player
             isInvincible = false;
         }
 
-        private void AddImpact(Vector3 attack, float force)
-        {
-            var impactDir = transform.position - attack;
-            impactDir.Normalize();
-            impactDir.y = 0;
-            impactOnCharacter = impactDir * force;
-        }
-
         public override void PickUp(ItemPickUp itemPickUp)
         {
             base.PickUp(itemPickUp);
@@ -252,6 +245,7 @@ namespace CharacterComponent.Player
                     healVFX.Play();
                     break;
                 case PickUpType.Coin:
+                    coin += itemPickUp.value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -269,7 +263,18 @@ namespace CharacterComponent.Player
             if (playerInput.directionMove != Vector2.zero)
             {
                 transform.rotation = Quaternion.LookRotation(moveVelocity);
+                // transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_movementVelocity), rotationSpeed * Time.deltaTime);
             }
+        }
+
+        private void RotateToCursor()
+        {
+            var ray = cam.ScreenPointToRay(UnityEngine.Input.mousePosition);
+
+            if (!Physics.Raycast(ray, out var raycastHit, 1000, 1 << LayerMask.NameToLayer("CursorTest"))) return;
+
+            var cursorPos = raycastHit.point;
+            transform.rotation = Quaternion.LookRotation(cursorPos - transform.position, Vector3.up);
         }
     }
 }

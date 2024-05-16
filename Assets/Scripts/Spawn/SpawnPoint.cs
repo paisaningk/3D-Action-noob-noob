@@ -8,17 +8,18 @@ namespace Spawn
     {
         public EnemyCharacter enemyToSpawn;
 
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            var center = transform.position + new Vector3(0, 0.5f);
+            Gizmos.DrawWireCube(center, Vector3.one);
+            Gizmos.DrawLine(center, center + transform.forward * 2);
+        }
+
         [Button]
         public void RenameGameObjectHaveEnemy()
         {
-            var gameObject1 = gameObject;
-
-            var replace = gameObject1.name.Replace(enemyToSpawn.name, string.Empty);
-
-            replace = replace.Replace("/", string.Empty);
-            replace = replace.Trim();
-
-            gameObject1.name = $"{replace} / {enemyToSpawn.name}";
+            gameObject.name = $"SpawnPoint / {enemyToSpawn.name}";
         }
     }
 }

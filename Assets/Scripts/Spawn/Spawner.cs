@@ -2,7 +2,6 @@
 using System.Linq;
 using CharacterComponent;
 using Sirenix.OdinInspector;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -57,14 +56,14 @@ namespace Spawn
             foreach (var spawnPoint in spawnPointList.Where(spawnPoint => spawnPoint.enemyToSpawn))
             {
                 var instantiate = Instantiate(spawnPoint.enemyToSpawn, spawnPoint.transform.position,
-                    quaternion.identity);
+                    spawnPoint.transform.rotation);
 
                 instantiate.spawner = this;
 
                 enemyInZone.Add(instantiate);
             }
 
-            enemyInSpawner = enemyInZone.Count;
+            enemyInSpawner = spawnPointList.Count;
         }
 
         public void CheckEnemyDead()

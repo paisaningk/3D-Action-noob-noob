@@ -157,6 +157,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 3119923106245491768}
+  characterController: {fileID: 5593003434139339327}
+  impactOnCharacter: {x: 0, y: 0, z: 0}
   moveSpeed: 2
   moveVelocity: {x: 0, y: 0, z: 0}
   currentState: 5
@@ -205,7 +207,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 100
-  character: {fileID: 6195755502204698111}
 --- !u!114 &1431831332106927190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -855,6 +856,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Particle BeingHit
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936046340871599824, guid: 0570e3315dd21b34094ca0475d3310a7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3469780265090588746, guid: 0570e3315dd21b34094ca0475d3310a7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5680359259124363205, guid: 0570e3315dd21b34094ca0475d3310a7,
         type: 3}

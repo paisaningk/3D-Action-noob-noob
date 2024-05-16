@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace CharacterComponent.Enemy
 {
@@ -12,9 +11,14 @@ namespace CharacterComponent.Enemy
 
         public void Update()
         {
+            if (enemyCharacter.isDead)
+            {
+                return;
+            }
+
             enemyCharacter.RotateToTarget();
         }
-        
+
         //call in anim
         public void Shoot()
         {
